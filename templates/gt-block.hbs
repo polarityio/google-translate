@@ -1,0 +1,18 @@
+<div class="p-non-exfoliate-outer-padding">
+  {{#each details.data.translations as |object|}}
+    {{#if object.translatedText}}
+
+    <div>
+       <span class="p-key">Translation: </span>
+       <span class="p-value">{{object.translatedText}}</span>
+   </div>
+
+    {{/if}}
+    {{#if object.detectedSourceLanguage}}
+    <div>
+       <span class="p-key">Detected Language: </span>
+       <span class="p-value">{{object.detectedSourceLanguage}}</span>
+   </div>
+    {{/if}}
+  {{/each}}
+</div>
