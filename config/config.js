@@ -16,6 +16,8 @@ module.exports = {
    * @required
    */
   acronym: 'GT',
+  onDemandOnly: true,
+  defaultColor: 'light-gray',
   /**
    * Description for this integration which is displayed in the Polarity integrations user interface
    *
