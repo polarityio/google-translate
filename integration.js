@@ -24,18 +24,18 @@ function doLookup(entities, options, cb) {
     if (entity.value) {
       const requestOptions = {
         method: "POST",
-        uri: "https://translation.googleapis.com/language/translate/v2?key=" + options.apiKey,
+        uri: "https://translation.googleapis.com/language/translate/v2",
+        qs: {
+          key: options.apiKey
+        },
         body: {
           q: entity.value,
-          target: "en"
-        },
-        headers: {
-          "Content-Type": "application/json"
+          target: options.outputLanguage.value
         },
         json: true
       };
 
-      Logger.debug({ uri: requestOptions.uri }, "Request URI");
+      Logger.debug({requestOptions}, "Request");
 
       tasks.push(function (done) {
         requestDefault(requestOptions, function (error, res, body) {
@@ -115,6 +115,9 @@ function doLookup(entities, options, cb) {
 
             lookupResults.push({
               entity: result.entity,
+              displayValue: `${result.entity.value.slice(0, 120)}${
+                result.entity.value.length > 120 ? '...' : ''
+              }`,
               data: {
                 summary: [],
                 details

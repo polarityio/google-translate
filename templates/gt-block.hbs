@@ -1,18 +1,9 @@
-<div class="p-non-exfoliate-outer-padding">
-  {{#each details.data.translations as |object|}}
-    {{#if object.translatedText}}
-
-    <div>
-       <span class="p-key">Translation: </span>
-       <span class="p-value">{{object.translatedText}}</span>
-   </div>
-
-    {{/if}}
-    {{#if object.detectedSourceLanguage}}
-    <div>
-       <span class="p-key">Detected Language: </span>
-       <span class="p-value">{{object.detectedSourceLanguage}}</span>
-   </div>
-    {{/if}}
-  {{/each}}
-</div>
+{{#each details.data.translations as |object|}}
+  {{#if object.translatedText}}
+    <a class="p-link" href="https://translate.google.com/?hl=&tab=TT&sl=auto&tl={{block.userOptions.outputLanguage.value}}&text={{block.entity.value}}&op=translate"> Pivot to Google Translate {{fa-icon "external-link-square" class="external-link-icon"}}</a>
+    <h1 class="p-title">
+        {{fa-icon "lips" fixedWidth=true}} Translation Output
+    </h1>
+    <div class="text-container">{{object.translatedText}}</div>
+  {{/if}}
+{{/each}}
