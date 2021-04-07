@@ -21,11 +21,12 @@ dependency-reduced-pom.xml
 
 # Ignore local log files
 *.log
-logs/
-*.remote-sync.json
 
 # Ignore Generated HTML README Files
 README.html
 
 # Ignored installed NPM modules
 node_modules/
+
+# Ignore private keys
+key/

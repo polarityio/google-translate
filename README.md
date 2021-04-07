@@ -1,6 +1,6 @@
 # Polarity Google Translate Integration
 
-The Polarity - Google Translate integration is an on-demand only integration that takes any foreign language and translates the text into english.
+The Polarity - Google Translate integration is an on-demand only integration that auto-detects the input language and translates the text into the chosen output language.
 
 >Please note, this integration will only work when running the 3.2 Polarity Client and the 3.8 Polarity Sever versions.
 
@@ -14,6 +14,9 @@ To learn more about Google Translate, please visit: [official website](https://c
 
 ### Google Translate ApiKey
 ApiKey needed to access the Google Translate API.
+
+### Output Language
+Translate the selected text into the chosen target language.  The input text will be automatically detected.
 
 ## Installation Instructions
 
