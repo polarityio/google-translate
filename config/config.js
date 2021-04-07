@@ -24,11 +24,12 @@ module.exports = {
    * @type String
    * @optional
    */
-  description: 'Google Translate is a free service that instantly translates words, phrases, and web pages between English and over 100 other languages.',
+  description:
+    'Google Translate is a free service that instantly translates words, phrases, and web pages between English and over 100 other languages.',
   customTypes: [
     {
       key: 'translate',
-      regex: /[\s\S]*/
+      regex: /[\s\S]+/
     }
   ],
 
@@ -95,8 +96,7 @@ module.exports = {
     {
       key: 'outputLanguage',
       name: 'Output Language',
-      description:
-        'Output (Target) language identified using ISO-639-1 codes.',
+      description: 'Output (Target) language identified using ISO-639-1 codes.',
       default: {
         value: 'en',
         display: 'English (en)'
@@ -539,7 +539,6 @@ module.exports = {
           value: 'zu',
           display: 'Zulu (zu)'
         }
-
       ],
       multiple: false,
       userCanEdit: true,

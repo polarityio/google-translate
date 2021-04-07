@@ -39,6 +39,8 @@ function doLookup(entities, options, cb) {
 
       tasks.push(function (done) {
         requestDefault(requestOptions, function (error, res, body) {
+          Logger.debug({ error, res, body }, 'Request Results');
+
           if (error) {
             done({
               error: error,
@@ -47,7 +49,7 @@ function doLookup(entities, options, cb) {
             });
             return;
           }
-
+          
           let result = {};
           if (res.statusCode === 200) {
             result = {
@@ -82,7 +84,7 @@ function doLookup(entities, options, cb) {
     }
 
     results.forEach(result => {
-      Logger.trace({ result }, "Checking data to see if blocking");
+      Logger.debug({ result }, "Result");
 
       const { body: { data: { translations } } } = result;
 
@@ -93,37 +95,30 @@ function doLookup(entities, options, cb) {
         });
       } else if (translations) {
         translations.forEach(({ translatedText, detectedSourceLanguage }) => {
-          Logger.trace({ result: detectedSourceLanguage }, "Checking if this works");
-          if (detectedSourceLanguage === "en") {
-            lookupResults.push({
-              entity: result.entity,
-              data: null
-            });
-          } else {
-            const sourceLanguage = getSourceLanguage(detectedSourceLanguage);
+          Logger.debug({ detectedSourceLanguage }, "Translation Data");
+          const sourceLanguage = getSourceLanguage(detectedSourceLanguage);
 
-            const details = {
-              ...result.body,
-              data: {
-                ...result.body.data,
-                translations: [{
-                  translatedText,
-                  detectedSourceLanguage: sourceLanguage
-                }]
-              }
-            };
+          const details = {
+            ...result.body,
+            data: {
+              ...result.body.data,
+              translations: [{
+                translatedText,
+                detectedSourceLanguage: sourceLanguage
+              }]
+            }
+          };
 
-            lookupResults.push({
-              entity: result.entity,
-              displayValue: `${result.entity.value.slice(0, 120)}${
-                result.entity.value.length > 120 ? '...' : ''
-              }`,
-              data: {
-                summary: [],
-                details
-              }
-            });
-          }
+          lookupResults.push({
+            entity: result.entity,
+            displayValue: `${result.entity.value.slice(0, 120)}${
+              result.entity.value.length > 120 ? '...' : ''
+            }`,
+            data: {
+              summary: [],
+              details
+            }
+          });
         })
       }
     });
