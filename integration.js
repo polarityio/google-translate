@@ -119,7 +119,7 @@ function doLookup(entities, options, cb) {
             entity: result.entity,
             displayValue: `${result.entity.value.slice(0, 120)}${result.entity.value.length > 120 ? "..." : ""}`,
             data: {
-              summary: [],
+              summary: getSummaryTags(details),
               details
             }
           });
@@ -131,6 +131,18 @@ function doLookup(entities, options, cb) {
 
     cb(null, lookupResults);
   });
+}
+
+function getSummaryTags(details){
+  const tags = [];
+  if(details && details.data && Array.isArray(details.data.translations)){
+    details.data.translations.forEach((translation) => {
+      tags.push(translation.detectedSourceLanguage);
+    });
+  } else {
+    tags.push('Unknown Language');
+  }
+  return tags;
 }
 
 function getSourceLanguage(isoCode) {

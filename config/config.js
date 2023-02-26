@@ -57,14 +57,6 @@ module.exports = {
       file: './templates/gt-block.hbs'
     }
   },
-  summary: {
-    component: {
-      file: './components/gt-summary.js'
-    },
-    template: {
-      file: './templates/gt-summary.hbs'
-    }
-  },
   request: {
     cert: '',
     key: '',
