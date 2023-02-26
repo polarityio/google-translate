@@ -4,7 +4,7 @@ polarity.export = PolarityComponent.extend({
   details: Ember.computed.alias('block.data.details'),
   showCopyMessage: false,
   uniqueIdPrefix: '',
-  init () {
+  init() {
     let array = new Uint32Array(5);
     this.set('uniqueIdPrefix', window.crypto.getRandomValues(array).join(''));
 
@@ -24,7 +24,7 @@ polarity.export = PolarityComponent.extend({
       Ember.run.scheduleOnce('destroy', this, this.restoreCopyState);
     }
   },
-  copyElementToClipboard (element) {
+  copyElementToClipboard(element) {
     window.getSelection().removeAllRanges();
     let range = document.createRange();
 
@@ -33,7 +33,7 @@ polarity.export = PolarityComponent.extend({
     document.execCommand('copy');
     window.getSelection().removeAllRanges();
   },
-  restoreCopyState () {
+  restoreCopyState() {
     this.set('showCopyMessage', true);
 
     setTimeout(() => {
