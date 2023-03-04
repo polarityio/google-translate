@@ -1,10 +1,10 @@
-"use strict";
+'use strict';
 
-const request = require("postman-request");
-const config = require("./config/config");
-const async = require("async");
-const fs = require("fs");
-const iso6392 = require("iso-639-2");
+const request = require('postman-request');
+const config = require('./config/config');
+const async = require('async');
+const fs = require('fs');
+const iso6392 = require('iso-639-2');
 let Logger;
 let requestDefault;
 
@@ -18,13 +18,13 @@ function doLookup(entities, options, cb) {
   let lookupResults = [];
   let tasks = [];
 
-  Logger.trace({ entities }, "entities");
+  Logger.trace({ entities }, 'entities');
 
-  entities.forEach(entity => {
+  entities.forEach((entity) => {
     if (entity.value) {
       const requestOptions = {
-        method: "POST",
-        uri: "https://translation.googleapis.com/language/translate/v2",
+        method: 'POST',
+        uri: 'https://translation.googleapis.com/language/translate/v2',
         qs: {
           key: options.apiKey
         },
@@ -35,7 +35,7 @@ function doLookup(entities, options, cb) {
         json: true
       };
 
-      Logger.debug({requestOptions}, "Request");
+      Logger.debug({ requestOptions }, 'Request');
 
       tasks.push(function (done) {
         requestDefault(requestOptions, function (error, res, body) {
@@ -45,11 +45,11 @@ function doLookup(entities, options, cb) {
             done({
               error: error,
               entity: entity.value,
-              detail: "Error in Request"
+              detail: 'Error in Request'
             });
             return;
           }
-          
+
           let result = {};
           if (res.statusCode === 200) {
             result = {
@@ -58,14 +58,14 @@ function doLookup(entities, options, cb) {
             };
           } else if (res.statusCode === 429) {
             // reached rate limit
-            error = "Reached API Lookup Limit";
+            error = 'Reached API Lookup Limit';
           } else {
             // Non 200 status code
             done({
               error,
               httpStatus: res.statusCode,
               body,
-              detail: "Unexpected Non 200 HTTP Status Code",
+              detail: 'Unexpected Non 200 HTTP Status Code',
               entity: entity.value
             });
             return;
@@ -83,10 +83,14 @@ function doLookup(entities, options, cb) {
       return;
     }
 
-    results.forEach(result => {
-      Logger.debug({ result }, "Result");
+    results.forEach((result) => {
+      Logger.debug({ result }, 'Result');
 
-      const { body: { data: { translations } } } = result;
+      const {
+        body: {
+          data: { translations }
+        }
+      } = result;
 
       if (result.body === null || _isMiss(result.body)) {
         lookupResults.push({
@@ -95,54 +99,64 @@ function doLookup(entities, options, cb) {
         });
       } else if (translations) {
         translations.forEach(({ translatedText, detectedSourceLanguage }) => {
-          Logger.debug({ detectedSourceLanguage }, "Translation Data");
+          Logger.debug({ detectedSourceLanguage }, 'Translation Data');
           const sourceLanguage = getSourceLanguage(detectedSourceLanguage);
 
           const details = {
             ...result.body,
             data: {
               ...result.body.data,
-              translations: [{
-                translatedText,
-                detectedSourceLanguage: sourceLanguage
-              }]
+              translations: [
+                {
+                  translatedText,
+                  detectedSourceLanguage: sourceLanguage
+                }
+              ]
             }
           };
 
           lookupResults.push({
             entity: result.entity,
-            displayValue: `${result.entity.value.slice(0, 120)}${
-              result.entity.value.length > 120 ? '...' : ''
-            }`,
+            displayValue: `${result.entity.value.slice(0, 120)}${result.entity.value.length > 120 ? '...' : ''}`,
             data: {
-              summary: [],
+              summary: getSummaryTags(details),
               details
             }
           });
-        })
+        });
       }
     });
 
-    Logger.trace({ lookupResults }, "Lookup Results");
+    Logger.trace({ lookupResults }, 'Lookup Results');
 
     cb(null, lookupResults);
   });
 }
 
+function getSummaryTags(details) {
+  const tags = [];
+  if (details && details.data && Array.isArray(details.data.translations)) {
+    details.data.translations.forEach((translation) => {
+      tags.push(translation.detectedSourceLanguage);
+    });
+  } else {
+    tags.push('Unknown Language');
+  }
+  return tags;
+}
+
 function getSourceLanguage(isoCode) {
   const ios6391Translation = iso6392.find(({ iso6391 }) => iso6391 === isoCode);
-  if (ios6391Translation) return ios6391Translation.name.split(";")[0];
+  if (ios6391Translation) return ios6391Translation.name.split(';')[0];
 
   const ios6392Translation = iso6392.find(({ iso6392B }) => iso6392B === isoCode);
-  if (ios6392Translation) return ios6392Translation.name.split(";")[0];
+  if (ios6392Translation) return ios6392Translation.name.split(';')[0];
 
-  if ("zh-CN" || "zh-TW") return "Chinese";
+  if ('zh-CN' || 'zh-TW') return 'Chinese';
 }
 
 function _isMiss(body) {
-  return body &&
-    Array.isArray(body) &&
-    body.length === 0;
+  return body && Array.isArray(body) && body.length === 0;
 }
 
 function startup(logger) {
@@ -176,13 +190,12 @@ function startup(logger) {
 function validateOptions(userOptions, cb) {
   let errors = [];
   if (
-    typeof userOptions.apiKey.value !== "string" ||
-    (typeof userOptions.apiKey.value === "string" &&
-      userOptions.apiKey.value.length === 0)
+    typeof userOptions.apiKey.value !== 'string' ||
+    (typeof userOptions.apiKey.value === 'string' && userOptions.apiKey.value.length === 0)
   ) {
     errors.push({
-      key: "apiKey",
-      message: "You must provide a valid Google Translate API key"
+      key: 'apiKey',
+      message: 'You must provide a valid Google Translate API key'
     });
   }
   cb(null, errors);
