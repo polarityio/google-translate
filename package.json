@@ -1,6 +1,6 @@
 {
   "name": "GoogleTranslate",
-  "version": "3.2.1-beta",
+  "version": "3.2.1",
   "main": "./integration.js",
   "private": true,
   "dependencies": {
