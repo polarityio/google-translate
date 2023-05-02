@@ -228,8 +228,8 @@ module.exports = {
           display: 'Hawaiian (haw)'
         },
         {
-          value: 'he',
-          display: 'Hebrew (he)'
+          value: 'iw',
+          display: 'Hebrew (iw)'
         },
         {
           value: 'hi',
