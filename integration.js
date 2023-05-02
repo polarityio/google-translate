@@ -108,7 +108,7 @@ function doLookup(entities, options, cb) {
             data: inputAndOutputLanguageIsSame
               ? null
               : {
-                  summary: [],
+                  summary: getSummaryTags(details),
                   details: {
                     ...result.body,
                     data: {
@@ -138,6 +138,18 @@ const CUSTOM_IOS_TO_READABLE = {
   'zh-TW': 'Chinese',
   iw: 'Hebrew'
 };
+function getSummaryTags(details) {
+  const tags = [];
+  if (details && details.data && Array.isArray(details.data.translations)) {
+    details.data.translations.forEach((translation) => {
+      tags.push(translation.detectedSourceLanguage);
+    });
+  } else {
+    tags.push('Unknown Language');
+  }
+  return tags;
+}
+
 function getSourceLanguage(isoCode) {
   const ios6391Translation = iso6392.find(({ iso6391 }) => iso6391 === isoCode);
   if (ios6391Translation) return ios6391Translation.name.split(';')[0];
