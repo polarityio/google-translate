@@ -100,28 +100,28 @@ function doLookup(entities, options, cb) {
       } else if (translations) {
         translations.forEach(({ translatedText, detectedSourceLanguage }) => {
           Logger.debug({ detectedSourceLanguage }, 'Translation Data');
-          const sourceLanguage = getSourceLanguage(detectedSourceLanguage);
-
-          const details = {
-            ...result.body,
-            data: {
-              ...result.body.data,
-              translations: [
-                {
-                  translatedText,
-                  detectedSourceLanguage: sourceLanguage
-                }
-              ]
-            }
-          };
+          const inputAndOutputLanguageIsSame = detectedSourceLanguage === options.outputLanguage.value;
 
           lookupResults.push({
             entity: result.entity,
             displayValue: `${result.entity.value.slice(0, 120)}${result.entity.value.length > 120 ? '...' : ''}`,
-            data: {
-              summary: getSummaryTags(details),
-              details
-            }
+            data: inputAndOutputLanguageIsSame
+              ? null
+              : {
+                  summary: getSummaryTags(details),
+                  details: {
+                    ...result.body,
+                    data: {
+                      ...result.body.data,
+                      translations: [
+                        {
+                          translatedText,
+                          detectedSourceLanguage: getSourceLanguage(detectedSourceLanguage)
+                        }
+                      ]
+                    }
+                  }
+                }
           });
         });
       }
@@ -133,6 +133,11 @@ function doLookup(entities, options, cb) {
   });
 }
 
+const CUSTOM_IOS_TO_READABLE = {
+  'zh-CN': 'Chinese',
+  'zh-TW': 'Chinese',
+  iw: 'Hebrew'
+};
 function getSummaryTags(details) {
   const tags = [];
   if (details && details.data && Array.isArray(details.data.translations)) {
@@ -152,7 +157,8 @@ function getSourceLanguage(isoCode) {
   const ios6392Translation = iso6392.find(({ iso6392B }) => iso6392B === isoCode);
   if (ios6392Translation) return ios6392Translation.name.split(';')[0];
 
-  if ('zh-CN' || 'zh-TW') return 'Chinese';
+  // couldn't find a valid language match for the isoCode so just return the code
+  return CUSTOM_IOS_TO_READABLE[isoCode] || isoCode;
 }
 
 function _isMiss(body) {
