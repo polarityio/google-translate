@@ -102,6 +102,18 @@ function doLookup(entities, options, cb) {
           Logger.debug({ detectedSourceLanguage }, 'Translation Data');
           const inputAndOutputLanguageIsSame = detectedSourceLanguage === options.outputLanguage.value;
 
+          const details =  {
+            ...result.body,
+            data: {
+              ...result.body.data,
+              translations: [
+                {
+                  translatedText,
+                  detectedSourceLanguage: getSourceLanguage(detectedSourceLanguage)
+                }
+              ]
+            }
+          };
           lookupResults.push({
             entity: result.entity,
             displayValue: `${result.entity.value.slice(0, 120)}${result.entity.value.length > 120 ? '...' : ''}`,
@@ -109,18 +121,7 @@ function doLookup(entities, options, cb) {
               ? null
               : {
                   summary: getSummaryTags(details),
-                  details: {
-                    ...result.body,
-                    data: {
-                      ...result.body.data,
-                      translations: [
-                        {
-                          translatedText,
-                          detectedSourceLanguage: getSourceLanguage(detectedSourceLanguage)
-                        }
-                      ]
-                    }
-                  }
+                  details
                 }
           });
         });
