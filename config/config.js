@@ -29,7 +29,7 @@ module.exports = {
   customTypes: [
     {
       key: 'translate',
-      regex: /^[\s\S]{2,2048}$/
+      regex: /\S[\s\S]{2,2048}\S/
     }
   ],
 
