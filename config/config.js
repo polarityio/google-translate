@@ -62,8 +62,7 @@ module.exports = {
     key: '',
     passphrase: '',
     ca: '',
-    proxy: '',
-    rejectUnauthorized: true
+    proxy: ""
   },
   logging: {
     level: 'info'
